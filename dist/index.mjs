@@ -13,11 +13,22 @@ Airtable.configure({
 })
 const base = Airtable.base("appQcfrcSc0lfgpQH")
 
+const formatTime = (date) => {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    let timeString = hours + ':' + minutes + ' ' + ampm;
+    return timeString;
+}
+
 app.get("/flights", async (req, res) => {
 
     base('Flight Legs').select({
-        maxRecords: 5,
-        view: "Upcoming Legs"
+        maxRecords: 10,
+        view: "Today"
     }).firstPage((err, records) => {
         if (err) {
             console.log(err)
@@ -29,10 +40,10 @@ app.get("/flights", async (req, res) => {
         records?.forEach((record) => {
             flightList.push(
                 {
-                    time: new Date(record.get("Departure Date/Time")).toDateString(),
-                    airline: record.get("Airline"),
-                    to: record.get("State (from Arrival Airport)")[0],
-                    from: record.get("State (from Departure Airport)")[0],
+                    time: formatTime(new Date(record.get("Departure Date/Time"))),
+                    airline: record.get("Airline").substring(record.get("Airline").indexOf("-") + 1).trim(),
+                    to: record.get("State (from Arrival Airport)"),
+                    from: record.get("State (from Departure Airport)"),
                     flight: record.get("Flight Number")
                 }
             )
