@@ -39,6 +39,7 @@ app.get("/departures", async (req, res) => {
         );
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
+          timezone: record.get("Departure Timezone"),
           airline: record
             .get("Airline")
             .substring(record.get("Airline").indexOf("-") + 1)
@@ -75,6 +76,7 @@ app.get("/returns", async (req, res) => {
         );
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
+          timezone: record.get("Departure Timezone"),
           airline: record
             .get("Airline")
             .substring(record.get("Airline").indexOf("-") + 1)
