@@ -44,7 +44,8 @@ app.get("/departures", async (req, res) => {
                     airline: record.get("Airline").substring(record.get("Airline").indexOf("-") + 1).trim(),
                     to: record.get("State (from Arrival Airport)"),
                     from: record.get("State (from Departure Airport)"),
-                    flight: record.get("Flight Number")
+                    flight: record.get("Flight Number"),
+                    arrival_time: formatTime(new Date(record.get("Arrival Date/Time")))
                 }
             )
         })
@@ -73,7 +74,8 @@ app.get("/returns", async (req, res) => {
                     airline: record.get("Airline").substring(record.get("Airline").indexOf("-") + 1).trim(),
                     to: record.get("State (from Arrival Airport)"),
                     from: record.get("State (from Departure Airport)"),
-                    flight: record.get("Flight Number")
+                    flight: record.get("Flight Number"),
+                    arrival_time: formatTime(new Date(record.get("Arrival Date/Time")))
                 }
             )
         })
