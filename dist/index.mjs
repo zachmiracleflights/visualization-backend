@@ -18,6 +18,11 @@ const getAirport = async (recordID) => {
   return airport.fields["Airport Code"];
 };
 
+const getCity = async (recordID) => {
+  const airport = await base("Directory: Airports").find(recordID);
+  return airport.fields["City"]
+}
+
 app.get("/departures", async (req, res) => {
   base("Flight Legs")
     .select({
@@ -37,6 +42,8 @@ app.get("/departures", async (req, res) => {
         const departureAirport = await getAirport(
           record.get("Departure Airport")
         );
+        const departureCity = await getCity(record.get("Departure Airport"))
+        const arrivalCity = await getCity(record.get("Arrival Airport"))
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
           timezone: record.get("Departure Timezone"),
@@ -48,6 +55,8 @@ app.get("/departures", async (req, res) => {
           from: departureAirport,
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
+          arrival_city: arrivalCity,
+          departure_city: departureCity
         });
       }
 
@@ -74,6 +83,8 @@ app.get("/returns", async (req, res) => {
         const departureAirport = await getAirport(
           record.get("Departure Airport")
         );
+        const departureCity = await getCity(record.get("Departure Airport"))
+        const arrivalCity = await getCity(record.get("Arrival Airport"))
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
           timezone: record.get("Departure Timezone"),
@@ -85,6 +96,8 @@ app.get("/returns", async (req, res) => {
           from: departureAirport,
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
+          arrival_city: arrivalCity,
+          departure_city: departureCity
         });
       }
 
