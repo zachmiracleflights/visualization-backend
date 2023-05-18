@@ -1,5 +1,6 @@
 import express from "express";
 const app = express();
+import cors from "cors"
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -22,6 +23,8 @@ const getCity = async (recordID) => {
   const airport = await base("Directory: Airports").find(recordID);
   return airport.fields["City"]
 }
+
+app.use(cors())
 
 app.get("/departures", async (req, res) => {
   base("Flight Legs")
