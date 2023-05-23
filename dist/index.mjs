@@ -67,7 +67,7 @@ app.get("/departures", async (req, res) => {
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
           arrival_city: arrivalCity,
-          arrival_cords: arrivalCoords,
+          arrival_coords: arrivalCoords,
           departure_city: departureCity,
           departure_coords: departureCoords
         });
@@ -112,7 +112,7 @@ app.get("/returns", async (req, res) => {
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
           arrival_city: arrivalCity,
-          arrival_cords: arrivalCoords,
+          arrival_coords: arrivalCoords,
           departure_city: departureCity,
           departure_coords: departureCoords
         });
