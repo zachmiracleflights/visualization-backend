@@ -10,7 +10,7 @@ const port = process.env.PORT;
 import Airtable from "airtable";
 Airtable.configure({
   endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.API_KEY,
+  apiKey: process.env.AIRTABLE_KEY,
 });
 const base = Airtable.base("appQcfrcSc0lfgpQH");
 
@@ -22,6 +22,12 @@ const getAirport = async (recordID) => {
 const getCity = async (recordID) => {
   const airport = await base("Directory: Airports").find(recordID);
   return airport.fields["City"]
+}
+
+const getCoords = async (city) => {
+  const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+  const data = await res.json()
+  return [data.results[0].geometry.location.lat, data.results[0].geometry.location.lng]
 }
 
 app.use(cors())
@@ -46,7 +52,9 @@ app.get("/departures", async (req, res) => {
           record.get("Departure Airport")
         );
         const departureCity = await getCity(record.get("Departure Airport"))
+        const departureCoords = await getCoords(departureCity)
         const arrivalCity = await getCity(record.get("Arrival Airport"))
+        const arrivalCoords = await getCoords(arrivalCity)
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
           timezone: record.get("Departure Timezone"),
@@ -59,7 +67,9 @@ app.get("/departures", async (req, res) => {
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
           arrival_city: arrivalCity,
-          departure_city: departureCity
+          arrival_cords: arrivalCoords,
+          departure_city: departureCity,
+          departure_coords: departureCoords
         });
       }
 
