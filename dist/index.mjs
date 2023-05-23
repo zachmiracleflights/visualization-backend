@@ -97,7 +97,9 @@ app.get("/returns", async (req, res) => {
           record.get("Departure Airport")
         );
         const departureCity = await getCity(record.get("Departure Airport"))
+        const departureCoords = await getCoords(departureCity)
         const arrivalCity = await getCity(record.get("Arrival Airport"))
+        const arrivalCoords = await getCoords(arrivalCity)
         flightList.push({
           time: new Date(record.get("Departure Date/Time")),
           timezone: record.get("Departure Timezone"),
@@ -110,7 +112,9 @@ app.get("/returns", async (req, res) => {
           flight: record.get("Flight Number"),
           arrival_time: new Date(record.get("Arrival Date/Time")),
           arrival_city: arrivalCity,
-          departure_city: departureCity
+          arrival_cords: arrivalCoords,
+          departure_city: departureCity,
+          departure_coords: departureCoords
         });
       }
 
